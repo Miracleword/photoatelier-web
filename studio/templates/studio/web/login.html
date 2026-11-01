@@ -1,0 +1,26 @@
+{% extends "studio/web/base.html" %}
+
+{% block title %}Вход сотрудника — Фотоателье{% endblock %}
+
+{% block content %}
+<section class="panel form-panel">
+    <h1>Вход сотрудника</h1>
+    <p class="muted">Используйте учётную запись сотрудника или администратора.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        {% for field in form %}
+        <div class="field">
+            {{ field.label_tag }}
+            {{ field }}
+            {{ field.errors }}
+        </div>
+        {% endfor %}
+
+        <input type="hidden" name="next" value="{{ next }}">
+        <button type="submit">Войти</button>
+    </form>
+</section>
+{% endblock %}

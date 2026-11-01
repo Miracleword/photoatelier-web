@@ -1,0 +1,41 @@
+{% extends "studio/web/base.html" %}
+
+{% block content %}
+<section class="panel form-panel">
+    <h1>
+        {% if obj %}Изменение{% else %}Создание{% endif %}:
+        {{ spec.singular }}
+    </h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        {% for field in form %}
+        <div class="field">
+            {{ field.label_tag }}
+            {{ field }}
+            {{ field.errors }}
+            {% if field.help_text %}
+            <p class="helptext">{{ field.help_text }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <div class="actions">
+            <button type="submit">Сохранить</button>
+            {% if obj %}
+            <a class="button secondary"
+               href="{% url 'studio_catalog:detail' kind obj.pk %}">
+                Отмена
+            </a>
+            {% else %}
+            <a class="button secondary"
+               href="{% url 'studio_catalog:list' kind %}">
+                Отмена
+            </a>
+            {% endif %}
+        </div>
+    </form>
+</section>
+{% endblock %}

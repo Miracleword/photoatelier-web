@@ -1,0 +1,84 @@
+{% extends "studio/web/base.html" %}
+
+{% block content %}
+<div class="toolbar">
+    <div>
+        <h1>Заказы фотоателье</h1>
+        <p class="muted">Найдено записей: {{ orders|length }}</p>
+    </div>
+    <a class="button" href="{% url 'studio_web:order_create' %}">
+        + Создать заказ
+    </a>
+</div>
+
+<section class="panel">
+    <form class="filters" method="get">
+        <div>
+            <label for="q">Поиск</label>
+            <input id="q" name="q" value="{{ query }}"
+                   placeholder="Номер, клиент, телефон">
+        </div>
+
+        <div>
+            <label for="status">Статус</label>
+            <select id="status" name="status">
+                <option value="">Все статусы</option>
+                {% for value, label in statuses %}
+                <option value="{{ value }}"
+                    {% if selected_status == value %}selected{% endif %}>
+                    {{ label }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="sort">Сортировка</label>
+            <select id="sort" name="sort">
+                {% for value, label in sort_options %}
+                <option value="{{ value }}"
+                    {% if selected_sort == value %}selected{% endif %}>
+                    {{ label }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit">Применить</button>
+        <a class="button" href="{% url 'studio_web:order_list' %}">Сбросить</a>
+    </form>
+</section>
+
+<section class="panel table-wrap">
+    <table>
+        <thead>
+        <tr>
+            <th>Заказ</th>
+            <th>Клиент</th>
+            <th>Услуга</th>
+            <th>Дата</th>
+            <th>Статус</th>
+            <th>Стоимость</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>
+                <a href="{% url 'studio_web:order_detail' order.pk %}">
+                    {{ order.order_number }}
+                </a>
+            </td>
+            <td>{{ order.client.full_name }}</td>
+            <td>{{ order.service.name }}</td>
+            <td>{{ order.desired_date|date:"d.m.Y" }}</td>
+            <td><span class="badge">{{ order.get_status_display }}</span></td>
+            <td>{{ order.total_price }} ₽</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6">Заказы не найдены.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

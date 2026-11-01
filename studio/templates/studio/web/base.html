@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Фотоателье{% endblock %}</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font: 16px Arial, sans-serif;
+            color: #24364b;
+            background: #f2f5fa;
+        }
+        header {
+            background: #203b60;
+            color: white;
+            padding: 18px 4%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+        header a { color: white; text-decoration: none; }
+        .brand { font-size: 23px; font-weight: bold; }
+        nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 17px;
+        }
+        nav form { margin: 0; }
+        main {
+            max-width: 1240px;
+            margin: 28px auto;
+            padding: 0 18px;
+        }
+        h1 { font-size: 27px; }
+        h2 { font-size: 21px; }
+        a { color: #285ca1; }
+        .panel {
+            background: white;
+            border: 1px solid #dce3ee;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 20px;
+        }
+        .toolbar, .actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .toolbar {
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .button, button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 44px;
+            box-sizing: border-box;
+            border: 0;
+            border-radius: 7px;
+            padding: 11px 16px;
+            background: #315f9b;
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+            font: inherit;
+            line-height: 1.25;
+            vertical-align: middle;
+            text-align: center;
+        }
+        .secondary { background: #e7edf6; color: #253d61; }
+        .danger { background: #b43c48; }
+        .nav-button { background: transparent; padding: 0; min-height: auto; }
+        .filters {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            align-items: end;
+        }
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            max-width: 100%;
+            border: 1px solid #b9c7d8;
+            border-radius: 6px;
+            padding: 10px;
+            font: inherit;
+            background: white;
+            color: #24364b;
+        }
+        .field { margin-bottom: 18px; }
+        .field input:not([type="checkbox"]),
+        .field select, .field textarea { width: 100%; }
+        .field input[type="checkbox"] { width: auto; }
+        .form-panel { max-width: 760px; }
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td {
+            text-align: left;
+            padding: 13px 10px;
+            border-bottom: 1px solid #e0e6ee;
+            vertical-align: top;
+        }
+        th { background: #edf2f8; }
+        .badge {
+            display: inline-block;
+            padding: 5px 9px;
+            background: #e5eefb;
+            color: #294f82;
+            border-radius: 6px;
+        }
+        .notice {
+            padding: 13px 17px;
+            border-radius: 7px;
+            background: #e4f2e8;
+            margin-bottom: 15px;
+        }
+        .notice.error, .errorlist { color: #a32136; }
+        .notice.error { background: #fbe8eb; }
+        .muted, .helptext { color: #65748a; }
+        .details {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 15px;
+        }
+        .details dt { font-weight: bold; }
+        .details dd { margin: 0; overflow-wrap: anywhere; }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .stat {
+            padding: 18px;
+            background: white;
+            border: 1px solid #dce3ee;
+            border-radius: 10px;
+        }
+        .stat strong {
+            display: block;
+            margin-top: 9px;
+            font-size: 27px;
+            color: #315f9b;
+        }
+        @media (max-width: 650px) {
+            .details { grid-template-columns: 1fr; gap: 8px; }
+            .details dd { margin-bottom: 12px; }
+        }
+        @media print {
+            header, .filters, .no-print { display: none; }
+            body { background: white; color: black; }
+            main { margin: 0; padding: 0; }
+            .panel { border: 0; padding: 0; }
+        }
+    </style>
+</head>
+<body>
+{% load studio_access %}
+<header>
+    <a class="brand" href="{% url 'studio_web:order_list' %}">
+        Фотоателье
+    </a>
+
+    {% if user|work_access %}
+    <nav>
+        <a href="{% url 'studio_web:order_list' %}">Заказы</a>
+        <a href="{% url 'studio_catalog:list' 'services' %}">Услуги</a>
+        <a href="{% url 'studio_catalog:list' 'categories' %}">Категории</a>
+        <a href="{% url 'studio_catalog:list' 'formats' %}">Форматы</a>
+        <a href="{% url 'studio_catalog:clients' %}">Клиенты</a>
+        <a href="/reports/">Отчёт</a>
+
+        {% if user|admin_access %}
+        <a href="/admin/">Панель администратора</a>
+        {% endif %}
+
+        <form action="{% url 'studio_web:logout' %}" method="post">
+            {% csrf_token %}
+            <button class="nav-button" type="submit">Выйти</button>
+        </form>
+    </nav>
+    {% endif %}
+</header>
+
+<main>
+    {% for message in messages %}
+    <div class="notice {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+    {% block content %}{% endblock %}
+</main>
+</body>
+</html>

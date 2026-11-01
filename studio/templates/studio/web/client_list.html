@@ -1,0 +1,41 @@
+{% extends "studio/web/base.html" %}
+
+{% block content %}
+<h1>Клиенты</h1>
+
+<section class="panel">
+    <form method="get" class="filters">
+        <div>
+            <label for="q">ФИО или телефон</label>
+            <input id="q" name="q" value="{{ query }}">
+        </div>
+        <button type="submit">Найти</button>
+        <a class="button" href="{% url 'studio_catalog:clients' %}">Сбросить</a>
+    </form>
+</section>
+
+<section class="panel table-wrap">
+    <table>
+        <thead><tr><th>Клиент</th><th>Телефон</th></tr></thead>
+        <tbody>
+        {% for item in clients %}
+        <tr>
+            <td>
+                <a href="{% url 'studio_catalog:client_detail' item.pk %}">
+                    {{ item.full_name }}
+                </a>
+            </td>
+            <td>{{ item.phone|default:"Не указан" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="2">Клиенты не найдены.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<p class="muted">
+    Учётные записи и роли создаются администратором.
+    Клиент также может зарегистрироваться в клиентском приложении.
+</p>
+{% endblock %}

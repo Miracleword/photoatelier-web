@@ -1,0 +1,22 @@
+{% extends "studio/web/base.html" %}
+
+{% block content %}
+<section class="panel form-panel">
+    <h1>Удаление записи</h1>
+    <p>Удалить «{{ obj.name }}»?</p>
+    <p class="muted">
+        Если запись используется другими данными, удаление будет запрещено.
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="actions">
+            <button class="danger" type="submit">Удалить</button>
+            <a class="button secondary"
+               href="{% url 'studio_catalog:detail' kind obj.pk %}">
+                Не удалять
+            </a>
+        </div>
+    </form>
+</section>
+{% endblock %}

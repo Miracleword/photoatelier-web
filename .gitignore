@@ -1,0 +1,23 @@
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local database and secrets
+*.sqlite3
+*.sqlite3-journal
+*.sqlite3-wal
+*.sqlite3-shm
+.env
+.env.*
+*.log
+database_backups/
+
+# IDE and OS
+.idea/
+*.iml
+Thumbs.db
+.DS_Store

@@ -1,0 +1,39 @@
+{% extends "studio/web/base.html" %}
+
+{% block content %}
+<section class="panel form-panel">
+    <h1>
+        {% if editing %}
+            Изменение {{ order.order_number }}
+        {% else %}
+            Создание заказа
+        {% endif %}
+    </h1>
+
+    <p class="muted">
+        Стоимость рассчитывается автоматически по цене услуги и количеству.
+        При смене только статуса сохранённая стоимость не меняется.
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        {% for field in form %}
+        <div class="field">
+            {{ field.label_tag }}
+            {{ field }}
+            {{ field.errors }}
+        </div>
+        {% endfor %}
+
+        <div class="actions">
+            <button type="submit">Сохранить</button>
+            <a class="button secondary"
+               href="{% url 'studio_web:order_list' %}">
+                Отмена
+            </a>
+        </div>
+    </form>
+</section>
+{% endblock %}

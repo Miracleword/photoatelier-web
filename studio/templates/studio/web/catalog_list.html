@@ -1,0 +1,94 @@
+{% extends "studio/web/base.html" %}
+
+{% block content %}
+<div class="toolbar">
+    <div>
+        <h1>{{ spec.title }}</h1>
+        <p class="muted">Записей: {{ items|length }}</p>
+    </div>
+    <a class="button" href="{% url 'studio_catalog:create' kind %}">
+        + Добавить
+    </a>
+</div>
+
+<section class="panel">
+    <form method="get" class="filters">
+        <div>
+            <label for="q">Поиск по названию</label>
+            <input id="q" name="q" value="{{ query }}">
+        </div>
+        <div>
+            <label for="sort">Сортировка</label>
+            <select id="sort" name="sort">
+                {% for value, label in sort_options %}
+                <option value="{{ value }}"
+                    {% if selected_sort == value %}selected{% endif %}>
+                    {{ label }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        {% if kind == "services" %}
+        <div>
+            <label for="active">Доступность</label>
+            <select id="active" name="active">
+                <option value="">Все</option>
+                <option value="yes" {% if active == "yes" %}selected{% endif %}>
+                    Доступные
+                </option>
+                <option value="no" {% if active == "no" %}selected{% endif %}>
+                    Отключённые
+                </option>
+            </select>
+        </div>
+        {% endif %}
+
+        <button type="submit">Применить</button>
+        <a class="button" href="{% url 'studio_catalog:list' kind %}">Сбросить</a>
+    </form>
+</section>
+
+<section class="panel table-wrap">
+    <table>
+        <thead>
+        <tr>
+            <th>Название</th>
+            {% if kind == "services" %}
+            <th>Категория</th>
+            <th>Формат</th>
+            <th>Цена</th>
+            <th>Доступность</th>
+            {% else %}
+            <th>Описание</th>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in items %}
+        <tr>
+            <td>
+                <a href="{% url 'studio_catalog:detail' kind item.pk %}">
+                    {{ item.name }}
+                </a>
+            </td>
+            {% if kind == "services" %}
+            <td>{{ item.category }}</td>
+            <td>{{ item.service_format|default:"—" }}</td>
+            <td>{{ item.price }} ₽</td>
+            <td>{{ item.is_active|yesno:"Доступна,Отключена" }}</td>
+            {% else %}
+            <td>{{ item.description|default:"—"|truncatechars:150 }}</td>
+            {% endif %}
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="{% if kind == 'services' %}5{% else %}2{% endif %}">
+                Записи не найдены.
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

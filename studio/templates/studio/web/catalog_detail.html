@@ -1,0 +1,33 @@
+{% extends "studio/web/base.html" %}
+
+{% block content %}
+<div class="toolbar">
+    <h1>{{ spec.singular }}: {{ obj.name }}</h1>
+    <div class="actions">
+        <a class="button" href="{% url 'studio_catalog:edit' kind obj.pk %}">
+            Изменить
+        </a>
+        <a class="button danger"
+           href="{% url 'studio_catalog:delete' kind obj.pk %}">
+            Удалить
+        </a>
+        <a class="button" href="{% url 'studio_catalog:list' kind %}">К списку</a>
+    </div>
+</div>
+
+<section class="panel">
+    <dl class="details">
+        {% for label, value in details %}
+        <dt>{{ label }}</dt>
+        <dd>{{ value|linebreaksbr }}</dd>
+        {% endfor %}
+    </dl>
+</section>
+
+{% if kind == "services" %}
+<p class="muted">
+    Если услуга уже используется в заказах, вместо удаления отключите
+    её доступность в форме изменения.
+</p>
+{% endif %}
+{% endblock %}

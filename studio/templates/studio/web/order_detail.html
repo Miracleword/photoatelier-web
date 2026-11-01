@@ -1,0 +1,61 @@
+{% extends "studio/web/base.html" %}
+
+{% block content %}
+<div class="toolbar">
+    <h1>Заказ {{ order.order_number }}</h1>
+    <div class="actions">
+        <a class="button" href="{% url 'studio_web:order_edit' order.pk %}">
+            Изменить
+        </a>
+        {% if can_delete %}
+        <a class="button danger"
+           href="{% url 'studio_web:order_delete' order.pk %}">
+            Удалить
+        </a>
+        {% endif %}
+        <a class="button" href="{% url 'studio_web:order_list' %}">К списку</a>
+    </div>
+</div>
+
+<section class="panel">
+    <dl class="details">
+        <dt>Клиент</dt><dd>{{ order.client.full_name }}</dd>
+        <dt>Телефон</dt><dd>{{ order.client.phone }}</dd>
+        <dt>Услуга</dt><dd>{{ order.service.name }}</dd>
+        <dt>Формат</dt>
+        <dd>{{ order.service.service_format|default:"Не указан" }}</dd>
+        <dt>Желаемая дата</dt>
+        <dd>{{ order.desired_date|date:"d.m.Y" }}</dd>
+        <dt>Количество</dt><dd>{{ order.quantity }}</dd>
+        <dt>Стоимость</dt><dd>{{ order.total_price }} ₽</dd>
+        <dt>Статус</dt><dd>{{ order.get_status_display }}</dd>
+        <dt>Комментарий клиента</dt>
+        <dd>{{ order.comment|default:"—"|linebreaksbr }}</dd>
+        <dt>Комментарий сотрудника</dt>
+        <dd>{{ order.employee_comment|default:"—"|linebreaksbr }}</dd>
+        <dt>Создан</dt><dd>{{ order.created_at|date:"d.m.Y H:i" }}</dd>
+    </dl>
+</section>
+
+<section class="panel">
+    <h2>История статусов</h2>
+    <div class="table-wrap">
+        <table>
+            <thead>
+            <tr><th>Дата</th><th>Статус</th><th>Комментарий</th></tr>
+            </thead>
+            <tbody>
+            {% for item in history %}
+            <tr>
+                <td>{{ item.changed_at|date:"d.m.Y H:i" }}</td>
+                <td>{{ item.get_status_display }}</td>
+                <td>{{ item.comment|default:"—"|linebreaksbr }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3">Записей пока нет.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

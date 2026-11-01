@@ -1,0 +1,40 @@
+{% extends "studio/web/base.html" %}
+
+{% block content %}
+<div class="toolbar">
+    <h1>{{ client_obj.full_name }}</h1>
+    <a class="button" href="{% url 'studio_catalog:clients' %}">К списку клиентов</a>
+</div>
+
+<section class="panel">
+    <dl class="details">
+        <dt>Телефон</dt><dd>{{ client_obj.phone|default:"Не указан" }}</dd>
+        <dt>Email</dt><dd>{{ client_obj.user.email|default:"Не указан" }}</dd>
+    </dl>
+</section>
+
+<section class="panel table-wrap">
+    <h2>Заказы клиента</h2>
+    <table>
+        <thead>
+        <tr><th>Номер</th><th>Услуга</th><th>Статус</th><th>Стоимость</th></tr>
+        </thead>
+        <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>
+                <a href="{% url 'studio_web:order_detail' order.pk %}">
+                    {{ order.order_number }}
+                </a>
+            </td>
+            <td>{{ order.service.name }}</td>
+            <td>{{ order.get_status_display }}</td>
+            <td>{{ order.total_price }} ₽</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">Заказов пока нет.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}
